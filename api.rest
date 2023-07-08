@@ -1,0 +1,51 @@
+GET http://localhost:7000/role
+
+###
+GET http://localhost:7000/role/2
+
+###
+POST http://localhost:7000/role
+Content-Type: application/json
+
+{
+    "roleName": "test lagi",
+    "active": "true"
+}
+
+###
+PATCH  http://localhost:7000/role/4
+Content-Type: application/json
+
+{
+    "roleName": "mana main",
+    "active": "true"
+}
+
+###
+DELETE  http://localhost:7000/role/4
+
+# user
+###
+POST http://localhost:7000/user/signup
+Content-Type: application/json
+
+{
+    "name": "Saputra",
+    "email": "admin2@gmail.com",
+    "password": "12345678",
+    "confirmPassword": "12345678",
+    "roleId": "2"
+}
+
+### Login
+POST http://localhost:7000/user/login
+Content-Type: application/json
+
+{
+    "email": "admin1@gmail.com",
+    "password": "12345678"
+}
+
+###
+GET http://localhost:7000/user/current-user
+
