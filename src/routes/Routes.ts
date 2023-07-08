@@ -3,6 +3,7 @@ import express from "express";
 import RoleController from "../controllers/RoleControllers";
 import UserController from "../controllers/UserControllers";
 import BannerController from "../controllers/BannerController";
+import BeritaController from "../controllers/BeritaController";
 
 import UserValidation from "../middleware/validation/UserValidation";
 import Authorization from "../middleware/Authorization";
@@ -31,6 +32,16 @@ router.post("/banner", BannerController.createBanner);
 router.get("/banner/:id", BannerController.GetBannerById);
 router.patch("/banner/:id",BannerController.updateBanner);
 router.delete("/banner/:id", BannerController.deleteBanner);
+
+// Berita
+router.get("/berita&program", BeritaController.GetBerita);
+router.get("/berita&program/:id", BeritaController.GetBeritaById);
+router.post("/berita&program", BeritaController.createBerita);
+router.patch("/berita&program/:id", BeritaController.updateBerita);
+router.delete("/berita*program/:id", BeritaController.deleteBerita);
+
+
+
 
 
 export default router;

@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 interface UserData  {
+	id: number | null
 	name: string | null
 	email: string | null
 	roleId: string | null
