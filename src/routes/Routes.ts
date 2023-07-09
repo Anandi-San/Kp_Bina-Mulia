@@ -4,6 +4,7 @@ import RoleController from "../controllers/RoleControllers";
 import UserController from "../controllers/UserControllers";
 import BannerController from "../controllers/BannerController";
 import BeritaController from "../controllers/BeritaController";
+import CareerController from "../controllers/CareerController";
 
 import UserValidation from "../middleware/validation/UserValidation";
 import Authorization from "../middleware/Authorization";
@@ -40,6 +41,12 @@ router.post("/berita&program", BeritaController.createBerita);
 router.patch("/berita&program/:id", BeritaController.updateBerita);
 router.delete("/berita*program/:id", BeritaController.deleteBerita);
 
+//Career
+router.get("/career", CareerController.getCareer);
+router.get("/career/:id", CareerController.GetCareerById);
+router.post("/career", CareerController.CreateCareer);
+router.patch("/career/:id", CareerController.UpdateCareer);
+router.delete("/career/:id", CareerController.DeleteCareer);
 
 
 
