@@ -271,11 +271,5 @@ const GetBerita = async (req: Request, res: Response): Promise<Response> => {
       });
     }
   };
-  
-  
-  
-
-
-
 
   export default {GetBerita, GetBeritaById, createBerita, updateBerita, deleteBerita};
