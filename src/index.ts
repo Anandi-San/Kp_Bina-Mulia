@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import Router from "./routes/Routes";
+import {scheduleCareerDeletion} from "./controllers/CareerController"
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -14,6 +15,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use(express.json());
 app.use(Router)
+app.use(scheduleCareerDeletion);
 
 app.listen(process.env.APP_PORT, () => {
 	console.log((`${process.env.APP_NAME} running on port ${process.env.APP_PORT}`))

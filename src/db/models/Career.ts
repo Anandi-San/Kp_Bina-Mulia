@@ -1,5 +1,7 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import connection from "../../config/dbConnect";
+import moment from 'moment-timezone';
+import { convertToMakassarTime } from "../../helpers/timezone";
 
 interface CareerAttributes {
 	id?: number,
@@ -14,12 +16,12 @@ interface CareerAttributes {
   
 	createdAt?: Date,
 	updatedAt? : Date
-  }
-  
-  export interface CareerInput extends Optional<CareerAttributes, 'id'>{ }
-  export interface CareerOutput extends Required<CareerAttributes>{ }
-  
-  class Career extends Model<CareerAttributes, CareerInput> implements CareerAttributes {
+}
+
+export interface CareerInput extends Optional<CareerAttributes, 'id'>{ }
+export interface CareerOutput extends Required<CareerAttributes>{ }
+
+class Career extends Model<CareerAttributes, CareerInput> implements CareerAttributes {
 	public id!: number;
 	public title!: string;
 	public posisi!: string;
@@ -30,10 +32,9 @@ interface CareerAttributes {
 	public link!: string;
     public deletedAt!: Date;
   
-	public readonly createdAt!: Date;
-	public readonly updatedAt!: Date;
+	public createdAt!: Date;
+	public updatedAt!: Date;
 }
-
 
 Career.init({
 	id: {
@@ -80,5 +81,11 @@ Career.init({
 	underscored: false
 });
 
+Career.beforeSave((career, options) => {
+	if (career.isNewRecord) {
+		career.createdAt = convertToMakassarTime(new Date());
+	}
+	career.updatedAt = convertToMakassarTime(new Date());
+});
 
 export default Career;

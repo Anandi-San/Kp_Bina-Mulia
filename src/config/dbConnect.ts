@@ -12,7 +12,8 @@ const dbDialect = "mysql";
 
 const sequelizeConnection = new Sequelize(dbName, dbUsername, dbPassword, {
 	host: dbHost,
-	dialect: dbDialect
+	dialect: dbDialect,
+	timezone: '+08:00',
 });
 
 export default sequelizeConnection;
