@@ -23,7 +23,11 @@ const Authenticated = (req: Request, res: Response, next: NextFunction) => {
 	} catch (err:any) {
 		return res.status(500).send(Helper.ResponseData(500, "", err, null));
 	}
-}
+};
+
+// const verifyUser = (req: Request, res: Response, next: NextFunction) => {
+
+// }
 
 const SuperUser = (req: Request, res: Response, next: NextFunction) => {
 	try {

@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import crypto from 'crypto';
 
 dotenv.config();
 
@@ -82,6 +83,13 @@ const ExtractRefreshToken = (token: string): UserData | null => {
 		return result;
 	}
 	return null;
-}
+};
 
-export default { ResponseData, GenerateToken, GenerateRefreshToken, ExtractToken, ExtractRefreshToken };
+const generateVerificationToken = (): string => {
+	const token = crypto.randomBytes(32).toString('hex');
+	return token;
+  };
+
+
+
+export default { ResponseData, GenerateToken, GenerateRefreshToken, ExtractToken, ExtractRefreshToken, generateVerificationToken };

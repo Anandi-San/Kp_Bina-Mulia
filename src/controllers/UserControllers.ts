@@ -1,13 +1,97 @@
 import { Request, Response } from "express";
 import Role from "../db/models/Role";
 import User from "../db/models/User";
-
+import Register from "../db/models/Register";
+import nodemailer from "nodemailer";
+import Mailgen from 'mailgen'
 import Helper from "../helpers/Helper";
 import PasswordHelper from "../helpers/PasswordHelper";
 
-const Register = async (req: Request, res: Response): Promise<Response> => {
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const SignUp = async (req: Request, res: Response): Promise<any> => {
 	try {
-		const { name, email, password, confirmPassword, roleId } = req.body;
+	  const { name, email, password ,confirmPassword} = req.body;
+
+	  const hashed = await PasswordHelper.PasswordHashing(password);
+  
+	  // Buat transporter Nodemailer menggunakan konfigurasi Gmail
+	  const transporter = nodemailer.createTransport({
+		host: 'smtp.gmail.com',
+		port: 465,
+		secure: true,
+		// service: 'gmail',
+		auth: {
+		  user: process.env.USER_EMAIL,
+		  pass: process.env.USER_PASS,
+		},
+	  });
+  
+	  const verificationToken = Helper.generateVerificationToken();
+	  const verificationLink = `https://yayasanbinamulia/verify/${verificationToken}`;
+  
+	  const mailGenerator = new Mailgen({
+		theme: 'default',
+		product: {
+		  name: 'Mailgen',
+		  link: 'https://mailgen.js',
+		},
+	  });
+  
+	  const emailTemplate = {
+		body: {
+		  name: name,
+		  intro: 'Selamat datang di aplikasi kami! Klik tombol di bawah ini untuk melakukan verifikasi email Anda.',
+		  action: {
+			instructions: 'Klik tombol di bawah:',
+			button: {
+			  color: '#22BC66',
+			  text: 'Verifikasi Email',
+			  link: verificationLink,
+			},
+		  },
+		},
+	  };
+  
+	  const emailBody = mailGenerator.generate(emailTemplate);
+	  const emailText = mailGenerator.generatePlaintext(emailTemplate);
+  
+	  const mailOptions = {
+		from: 'Yayasan Bina Mulia <noreply@gmail.com>',
+		to: email,
+		subject: 'Verifikasi Email',
+		text: emailText,
+		html: emailBody,
+	  };
+
+	  await Register.create({
+		name,
+		email,
+		password: hashed,
+		token: verificationToken,
+		isVerified: false,
+	  });
+  
+	  await transporter.sendMail(mailOptions);
+  
+	  return res.status(201).json({
+		msg: 'Email verifikasi telah dikirim',
+	  });
+	} catch (error: any) {
+	  return res.status(500).send(Helper.ResponseData(500, '', error, null));
+	}
+  };
+
+  const VerifyToken = async (req: Request, res: Response): Promise<any> => {
+	
+  }
+
+
+const RegisterUser = async (req: Request, res: Response): Promise<Response> => {
+	try {
+		const { name, email, password, confirmPassword } = req.body;
 
 		const hashed = await PasswordHelper.PasswordHashing(password);
 
@@ -17,7 +101,39 @@ const Register = async (req: Request, res: Response): Promise<Response> => {
 			password: hashed,
 			active: true,
 			verified: true,
-			roleId: roleId
+			roleId: 3
+		});
+
+		return res.status(201).send(Helper.ResponseData(201, "Created", null, user));
+	} catch (error: any) {
+		return res.status(500).send(Helper.ResponseData(500, "", error, null));
+	}
+};
+
+const SignInwithGoogle = async (req: Request, res: Response): Promise<Response> => {
+	try {
+		const { name, email,photoUrl, accessToken, verified } = req.body;
+
+		const existingUser = await User.findOne({
+			where: {
+			  email: email,
+			},
+		  });
+	  
+		  if (existingUser) {
+			// Jika email sudah terdaftar, kirim respons dengan pesan kesalahan
+			return res.status(400).send(Helper.ResponseData(400, "Email already exists", null, null));
+		  }
+
+		const user = await User.create({
+			name,
+			email,
+			photoUrl,
+			accessToken,
+			// gambar nnti ada gambar
+			active: true,
+			verified,
+			roleId: 3
 		});
 
 		return res.status(201).send(Helper.ResponseData(201, "Created", null, user));
@@ -28,7 +144,7 @@ const Register = async (req: Request, res: Response): Promise<Response> => {
 
 const UserLogin = async (req: Request, res: Response): Promise<Response> => {
 	try {
-		const { email, password } = req.body;
+		const { email } = req.body;
 		const user = await User.findOne({
 			where: {
 				email: email
@@ -36,11 +152,6 @@ const UserLogin = async (req: Request, res: Response): Promise<Response> => {
 		});
 
 		if (!user) {
-			return res.status(401).send(Helper.ResponseData(401, "Unauthorized", null, null));
-		}
-
-		const matched = await PasswordHelper.PasswordCompare(password, user.password);
-		if (!matched) {
 			return res.status(401).send(Helper.ResponseData(401, "Unauthorized", null, null));
 		}
 
@@ -143,8 +254,9 @@ const UserDetail = async (req: Request, res: Response): Promise<Response> => {
 const UserLogout = async (req: Request, res: Response): Promise<Response> => {
 	try {
 		const refreshToken = req.cookies?.refreshToken;
-		if (!refreshToken) {
-			return res.status(200).send(Helper.ResponseData(200, "User logout", null, null));
+		if (refreshToken === null) {
+			// console.log(refreshToken)
+			return res.status(200).send(Helper.ResponseData(200, "User logoutada", null, null));
 		}
 		const email = res.locals.userEmail;
 		const user = await User.findOne({
@@ -155,15 +267,27 @@ const UserLogout = async (req: Request, res: Response): Promise<Response> => {
 
 		if (!user) {
 			res.clearCookie("refreshToken");
+			await new Promise<void>((resolve, reject) => {
+				req.session.destroy((err: any) => {
+				  if (err) reject(err);
+				  resolve();
+				});
+			  });
 			return res.status(200).send(Helper.ResponseData(200, "User logout", null, null));
 		}
 
 		await user.update({ accessToken: null }, { where: { email: email } });
 		res.clearCookie("refreshToken");
+		await new Promise<void>((resolve, reject) => {
+			req.session.destroy((err: any) => {
+			  if (err) reject(err);
+			  resolve();
+			});
+		  });
 		return res.status(200).send(Helper.ResponseData(200, "User logout", null, null));
 	} catch (error) {
 		return res.status(500).send(Helper.ResponseData(500, "", error, null));
 	}
 }
 
-export default { Register, UserLogin, RefreshToken, UserDetail, UserLogout };
+export default {RegisterUser, UserLogin, RefreshToken, UserDetail, UserLogout, SignInwithGoogle, SignUp };

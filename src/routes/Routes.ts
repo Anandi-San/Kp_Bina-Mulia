@@ -12,7 +12,7 @@ import Authorization from "../middleware/Authorization";
 const router = express.Router();
 
 // Role
-router.get("/role", Authorization.Authenticated, Authorization.SuperUser, RoleController.GetRole);
+router.get("/role", Authorization.Authenticated, RoleController.GetRole);
 router.get("/role/:id", RoleController.GetRoleById);
 router.patch("/role/:id", RoleController.UpdateRole);
 router.post("/role", RoleController.CreateRole);
@@ -21,11 +21,13 @@ router.delete("/role/:id", RoleController.DeleteRole);
 
 
 // User
-router.post("/user/signup",UserValidation.RegisterValidation, UserController.Register);
+router.post("/user/signup",UserValidation.RegisterValidation, UserController.RegisterUser);
+router.post("/signup", UserController.SignUp);
 router.post("/user/login", UserController.UserLogin);
 router.get("/user/refresh-token", UserController.RefreshToken);
 router.get("/user/current-user", Authorization.Authenticated, UserController.UserDetail);
 router.get("/user/logout", Authorization.Authenticated, UserController.UserLogout);
+router.post("/signin", UserController.SignInwithGoogle);
 
 // Banner
 router.get("/banner", Authorization.Authenticated, BannerController.GetBanner);

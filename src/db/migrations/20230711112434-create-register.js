@@ -2,12 +2,12 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('Registers', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.BIGINT
+        type: Sequelize.INTEGER
       },
       name: {
         type: Sequelize.STRING
@@ -15,22 +15,13 @@ module.exports = {
       email: {
         type: Sequelize.STRING
       },
-      roleId: {
-        type: Sequelize.BIGINT
-      },
-      photoUrl: {
-        type: Sequelize.TEXT
-      },
       password: {
+        type: Sequelize.STRING
+      },
+      token: {
         type: Sequelize.TEXT
       },
-      accessToken: {
-        type: Sequelize.TEXT
-      },
-      verified: {
-        type: Sequelize.BOOLEAN
-      },
-      active: {
+      isVerified: {
         type: Sequelize.BOOLEAN
       },
       createdAt: {
@@ -44,6 +35,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('Registers');
   }
 };

@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import connection from "../../config/dbConnect";
-import moment from 'moment-timezone';
+// import moment from 'moment-timezone';
 import { convertToMakassarTime } from "../../helpers/timezone";
 
 interface CareerAttributes {

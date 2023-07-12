@@ -7,6 +7,7 @@ interface UserAttributes {
 	name?: string | null,
 	email?: string | null,
 	roleId?: number | null,
+	photoUrl?: string | null,
 	password?: string | null,
 	accessToken?: string | null,
 	verified?: boolean | null,
@@ -24,6 +25,7 @@ interface UserAttributes {
 	public name!: string;
 	public email!: string;
 	public roleId!: number;
+	public photoUrl?: string;
 	public password!: string;
 	public accessToken!: string;
 	public verified!: boolean;
@@ -51,6 +53,10 @@ User.init({
 	},
 	roleId: {
 		type: DataTypes.BIGINT,
+		allowNull: true
+	},
+	photoUrl: {
+		type: DataTypes.TEXT,
 		allowNull: true
 	},
 	password: {
