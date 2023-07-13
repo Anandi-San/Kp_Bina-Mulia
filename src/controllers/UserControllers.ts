@@ -7,6 +7,7 @@ import Mailgen from 'mailgen'
 import Helper from "../helpers/Helper";
 import PasswordHelper from "../helpers/PasswordHelper";
 import dotenv from "dotenv";
+import session from 'express-session';
 
 dotenv.config();
 
@@ -174,6 +175,10 @@ const SignInwithGoogle = async (req: Request, res: Response): Promise<Response> 
 	}
 };
 
+interface CustomSession extends session.Session {
+	userId?: number;
+  }
+
 const UserLogin = async (req: Request, res: Response): Promise<Response> => {
 	try {
 		const { email } = req.body;
@@ -192,8 +197,11 @@ const UserLogin = async (req: Request, res: Response): Promise<Response> => {
 		// if (!matched) {
 		// 	return res.status(401).send(Helper.ResponseData(401, "Unauthorized", null, null));
 		// }
-
+		const customSession = req.session as CustomSession;
+		customSession.userId = user.id;
+		console.log(user.id)
 		const dataUser = {
+			id: user.id,
 			name: user.name,
 			email: user.email,
 			roleId: user.roleId,
@@ -211,6 +219,7 @@ const UserLogin = async (req: Request, res: Response): Promise<Response> => {
 		});
 
 		const responseUser = {
+			id: user.id,
 			name: user.name,
 			email: user.email,
 			roleId: user.roleId,

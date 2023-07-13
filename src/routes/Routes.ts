@@ -6,6 +6,7 @@ import BannerController from "../controllers/BannerController";
 import BeritaController from "../controllers/BeritaController";
 import CareerController from "../controllers/CareerController";
 import GaleriController from "../controllers/GaleriController";
+import MessageController from "../controllers/MessageController";
 
 
 import UserValidation from "../middleware/validation/UserValidation";
@@ -60,6 +61,11 @@ router.get("/galeri/:id", GaleriController.GetGaleriById);
 router.post("/galeri", GaleriController.createGaleri);
 router.patch("/galeri/:id", GaleriController.updateGaleri);
 router.delete("/galeri/:id", GaleriController.deleteGaleri);
+
+// Forum
+router.get("/forum", MessageController.getMessage);
+router.post("/forum", MessageController.createMessage);
+router.delete("/forum/:id", MessageController.deleteMessage);
 
 
 export default router;

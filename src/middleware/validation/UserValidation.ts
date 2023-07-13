@@ -2,6 +2,7 @@ import Validator from "validatorjs";
 import { Request, Response, NextFunction } from "express";
 import Helpers from "../../helpers/Helper";
 import User from "../../db/models/User";
+import session from 'express-session';
 
 const RegisterValidation = async (req: Request, res: Response, next: NextFunction) => {
 	try {
@@ -49,5 +50,30 @@ const RegisterValidation = async (req: Request, res: Response, next: NextFunctio
 	}
 	
 };
+
+// const verifyUser = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+//   try {
+//     if (!req.session.userId) {
+//       return res.status(401).json({ msg: "Mohon login ke akun Anda!" });
+//     }
+
+//     const user = await User.findOne({
+//       attributes: ['id', 'name', 'email'],
+//       where: {
+//         id: req.session.userId
+//       }
+//     });
+
+//     if (!user) {
+//       return res.status(404).json({ msg: "User tidak ditemukan" });
+//     }
+
+//     // req.id = user.id; // Tidak perlu mengatur req.id karena Anda ingin mengakses user.id dalam middleware berikutnya
+//     next();
+//   } catch (error) {
+//     return res.status(500).json({ error: "Gagal memverifikasi pengguna" });
+//   }
+// };
+
 
 export default { RegisterValidation };

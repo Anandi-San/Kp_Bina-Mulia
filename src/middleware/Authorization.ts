@@ -1,5 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import Helper from "../helpers/Helper";
+import User from "../db/models/User";
+
+interface CustomRequest extends Request {
+	userId: string;
+  }
 
 const Authenticated = (req: Request, res: Response, next: NextFunction) => {
 	try {
@@ -24,10 +29,6 @@ const Authenticated = (req: Request, res: Response, next: NextFunction) => {
 		return res.status(500).send(Helper.ResponseData(500, "", err, null));
 	}
 };
-
-// const verifyUser = (req: Request, res: Response, next: NextFunction) => {
-
-// }
 
 const SuperUser = (req: Request, res: Response, next: NextFunction) => {
 	try {
