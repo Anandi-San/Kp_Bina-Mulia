@@ -5,6 +5,8 @@ import UserController from "../controllers/UserControllers";
 import BannerController from "../controllers/BannerController";
 import BeritaController from "../controllers/BeritaController";
 import CareerController from "../controllers/CareerController";
+import GaleriController from "../controllers/GaleriController";
+
 
 import UserValidation from "../middleware/validation/UserValidation";
 import Authorization from "../middleware/Authorization";
@@ -28,6 +30,8 @@ router.get("/user/refresh-token", UserController.RefreshToken);
 router.get("/user/current-user", Authorization.Authenticated, UserController.UserDetail);
 router.get("/user/logout", Authorization.Authenticated, UserController.UserLogout);
 router.post("/signin", UserController.SignInwithGoogle);
+router.get("/verify/:token", UserController.VerifyToken);
+router.post("/resetPassword", UserController.resetPassword)
 
 // Banner
 router.get("/banner", Authorization.Authenticated, BannerController.GetBanner);
@@ -50,7 +54,12 @@ router.post("/career", CareerController.CreateCareer);
 router.patch("/career/:id", CareerController.UpdateCareer);
 router.delete("/career/:id", CareerController.DeleteCareer);
 
-
+// Galeri 
+router.get("/galeri", GaleriController.GetGaleri);
+router.get("/galeri/:id", GaleriController.GetGaleriById);
+router.post("/galeri", GaleriController.createGaleri);
+router.patch("/galeri/:id", GaleriController.updateGaleri);
+router.delete("/galeri/:id", GaleriController.deleteGaleri);
 
 
 export default router;

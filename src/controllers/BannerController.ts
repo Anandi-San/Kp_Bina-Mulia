@@ -138,7 +138,7 @@ const updateBanner = async (req: Request, res: Response): Promise<any> => {
       const bannerId: number = Number(req.params.id);
       const { title, subtitle } = req.body;
 
-      let banner: Banner | null = await Banner.findByPk(bannerId);
+      const banner: Banner | null = await Banner.findByPk(bannerId);
       if (!banner) {
         return res.status(404).send({
           status: 404,

@@ -6,6 +6,7 @@ import { convertToMakassarTime } from "../../helpers/timezone";
 interface CareerAttributes {
 	id?: number,
 	title?: string | null,
+	photo?: string | null,
 	posisi?: string | null,
 	kualifikasi?: string | null,
 	jobdesc?: string | null,
@@ -24,6 +25,7 @@ export interface CareerOutput extends Required<CareerAttributes>{ }
 class Career extends Model<CareerAttributes, CareerInput> implements CareerAttributes {
 	public id!: number;
 	public title!: string;
+	public photo!: string;
 	public posisi!: string;
 	public kualifikasi!: string;
 	public jobdesc!: string;
@@ -45,6 +47,10 @@ Career.init({
 	},
 	title: {
 		type: DataTypes.STRING,
+		allowNull: true
+	},
+	photo: {
+		type: DataTypes.TEXT,
 		allowNull: true
 	},
 	posisi: {

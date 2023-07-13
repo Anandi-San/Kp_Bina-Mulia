@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Careers', {
+    await queryInterface.createTable('Galeris', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -12,30 +12,35 @@ module.exports = {
       title: {
         type: Sequelize.STRING
       },
-      photo: {
-        type: Sequelize.TEXT
-      },
-      posisi: {
-        type: Sequelize.STRING
-      },
-      kualifikasi: {
-        type: Sequelize.TEXT
-      },
-      jobdesc: {
-        type: Sequelize.TEXT
-      },
-      penempatan: {
-        type: Sequelize.STRING
-      },
-      deadline: {
+      tanggal: {
         type: Sequelize.DATE
       },
-      link: {
-        type: Sequelize.STRING
+      lokasi: {
+        type: Sequelize.TEXT
       },
-      deletedAt: {
-        allowNull: true,
-        type: Sequelize.DATE
+      gambar1: {
+        type: Sequelize.TEXT
+      },
+      gambar2: {
+        type: Sequelize.TEXT
+      },
+      gambar3: {
+        type: Sequelize.TEXT
+      },
+      gambar4: {
+        type: Sequelize.TEXT
+      },
+      gambar5: {
+        type: Sequelize.TEXT
+      },
+      gambar6: {
+        type: Sequelize.TEXT
+      },
+      gambar7: {
+        type: Sequelize.TEXT
+      },
+      gambar8: {
+        type: Sequelize.TEXT
       },
       createdAt: {
         allowNull: false,
@@ -48,6 +53,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Careers');
+    await queryInterface.dropTable('Galeris');
   }
 };

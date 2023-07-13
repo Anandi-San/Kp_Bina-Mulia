@@ -6,9 +6,9 @@ const PasswordHashing = async (password: string): Promise<string> => {
 };
 
 const PasswordCompare = async (password: string, passwordHash: string): Promise<boolean> => {
-  const matched = await argon2.verify(passwordHash, password);
-
+  const matched = await argon2.verify(password, passwordHash);
   return matched;
 };
+
 
 export default { PasswordHashing, PasswordCompare };

@@ -4,7 +4,7 @@ import User from "../db/models/User";
 import multer, { Multer} from 'multer';
 import path from "path"
 import moment from 'moment-timezone';
-import fs from "fs"
+import fs from "fs";
 
 
 const upload: Multer = multer({

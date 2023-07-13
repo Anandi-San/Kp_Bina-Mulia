@@ -6,7 +6,6 @@ import nodemailer from "nodemailer";
 import Mailgen from 'mailgen'
 import Helper from "../helpers/Helper";
 import PasswordHelper from "../helpers/PasswordHelper";
-
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -19,10 +18,10 @@ const SignUp = async (req: Request, res: Response): Promise<any> => {
   
 	  // Buat transporter Nodemailer menggunakan konfigurasi Gmail
 	  const transporter = nodemailer.createTransport({
-		host: 'smtp.gmail.com',
-		port: 465,
-		secure: true,
-		// service: 'gmail',
+		// host: 'smtp.gmail.com',
+		// port: 465,
+		// secure: true,
+		service: 'gmail',
 		auth: {
 		  user: process.env.USER_EMAIL,
 		  pass: process.env.USER_PASS,
@@ -30,7 +29,7 @@ const SignUp = async (req: Request, res: Response): Promise<any> => {
 	  });
   
 	  const verificationToken = Helper.generateVerificationToken();
-	  const verificationLink = `https://yayasanbinamulia/verify/${verificationToken}`;
+	  const verificationLink = `http://localhost:7000/verify/${verificationToken}`;
   
 	  const mailGenerator = new Mailgen({
 		theme: 'default',
@@ -85,9 +84,42 @@ const SignUp = async (req: Request, res: Response): Promise<any> => {
   };
 
   const VerifyToken = async (req: Request, res: Response): Promise<any> => {
-	
-  }
+	try {
+	  const { token } = req.params;
+	  const registerData = await Register.findOne({ where: { token: token as string } });
 
+  
+	  if (!registerData) {
+		  return res.status(404).json({
+		  msg: 'Invalid verification token',
+		});
+	  }
+  
+	  registerData.isVerified = true;
+	  await registerData.save();
+  
+	  const { name, email, password } = registerData;
+	  await User.create({
+		name,
+		email,
+		password,
+		roleId: 3,
+		verified: true,
+		active: true,
+	  });
+  
+	  await Register.destroy({ where: { token: token as string } });
+
+	//   redirect front End
+	//   return res.redirect('http://localhost:3000/login');
+  
+	  return res.status(200).json({
+		msg: 'Verification successful. Data has been transferred to the User table.',
+	  });
+	} catch (error: any) {
+	  return res.status(500).send(Helper.ResponseData(500, '', error, null));
+	}
+  };
 
 const RegisterUser = async (req: Request, res: Response): Promise<Response> => {
 	try {
@@ -154,6 +186,12 @@ const UserLogin = async (req: Request, res: Response): Promise<Response> => {
 		if (!user) {
 			return res.status(401).send(Helper.ResponseData(401, "Unauthorized", null, null));
 		}
+
+		// makai password
+		// const matched = await PasswordHelper.PasswordCompare(user.password, password);
+		// if (!matched) {
+		// 	return res.status(401).send(Helper.ResponseData(401, "Unauthorized", null, null));
+		// }
 
 		const dataUser = {
 			name: user.name,
@@ -290,4 +328,35 @@ const UserLogout = async (req: Request, res: Response): Promise<Response> => {
 	}
 }
 
-export default {RegisterUser, UserLogin, RefreshToken, UserDetail, UserLogout, SignInwithGoogle, SignUp };
+const resetPassword = async (req: Request, res: Response): Promise<Response> => {
+	try {
+	  const { email, oldPassword, newPassword, confirmPassword } = req.body;
+
+	  const hashed = await PasswordHelper.PasswordHashing(newPassword);
+  
+	  if (newPassword !== confirmPassword) {
+		return res.status(400).send(Helper.ResponseData(400, "Password and confirm password do not match", null, null));
+	  }
+  
+	  const user = await User.findOne({ where: { email } });
+  
+	  if (!user) {
+		return res.status(404).send(Helper.ResponseData(404, "User not found", null, null));
+	  }
+  
+	  const isPasswordValid = await PasswordHelper.PasswordCompare(user.password, oldPassword);
+      if (!isPasswordValid) {
+        return res.status(401).json({ msg: "Password lama tidak cocok" });
+      }
+  
+	  user.password = hashed;
+	  await user.save();
+  
+	  return res.status(200).send(Helper.ResponseData(200, "Password has been reset successfully", null, null));
+	} catch (error) {
+	  return res.status(500).send(Helper.ResponseData(500, "", error, null));
+	}
+  };
+  
+
+export default {RegisterUser, UserLogin, RefreshToken, UserDetail, UserLogout, SignInwithGoogle, SignUp, VerifyToken, resetPassword };
