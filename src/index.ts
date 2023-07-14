@@ -27,7 +27,7 @@ app.use(
 	  cookie: {
 		// https = true
 		secure: false,
-		// maxAge: 30 * 60 * 1000, // 30m expired
+		maxAge: 30 * 60 * 1000, // 30m expired
 	  },
 	})
   )

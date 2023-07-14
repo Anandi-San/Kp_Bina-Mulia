@@ -20,7 +20,7 @@ const Authenticated = (req: Request, res: Response, next: NextFunction) => {
 			return res.status(401).send(Helper.ResponseData(401, "Unautorized", null, null));
 		}
 
-		res.locals.userId = result.id;
+		// res.locals.userId = result.id;
 		res.locals.userEmail = result?.email;
 		res.locals.roleId = result?.roleId;
 		next();

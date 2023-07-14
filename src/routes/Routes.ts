@@ -7,6 +7,8 @@ import BeritaController from "../controllers/BeritaController";
 import CareerController from "../controllers/CareerController";
 import GaleriController from "../controllers/GaleriController";
 import MessageController from "../controllers/MessageController";
+import UserFeaturesController from "../controllers/UserFeaturesController";
+
 
 
 import UserValidation from "../middleware/validation/UserValidation";
@@ -24,8 +26,8 @@ router.delete("/role/:id", RoleController.DeleteRole);
 
 
 // User
-router.post("/user/signup",UserValidation.RegisterValidation, UserController.RegisterUser);
-router.post("/signup", UserController.SignUp);
+// router.post("/user/signup",UserValidation.RegisterValidation, UserController.RegisterUser);
+router.post("/signup",UserValidation.RegisterValidation, UserController.SignUp);
 router.post("/user/login", UserController.UserLogin);
 router.get("/user/refresh-token", UserController.RefreshToken);
 router.get("/user/current-user", Authorization.Authenticated, UserController.UserDetail);
@@ -33,6 +35,13 @@ router.get("/user/logout", Authorization.Authenticated, UserController.UserLogou
 router.post("/signin", UserController.SignInwithGoogle);
 router.get("/verify/:token", UserController.VerifyToken);
 router.post("/resetPassword", UserController.resetPassword)
+
+// features User
+router.get("/user", UserFeaturesController.GetAllUser);
+router.get("/user/:id",UserFeaturesController.GetUserById);
+router.patch("/user/:id",Authorization.Authenticated, Authorization.BasicUser, UserFeaturesController.UpdateUserByUser);
+router.patch("/user/admin/:id",Authorization.Authenticated, Authorization.SuperUser, UserFeaturesController.UpdateUserByAdmin);
+router.delete("/user/:id", Authorization.Authenticated, Authorization.SuperUser, UserFeaturesController.DeleteUser);
 
 // Banner
 router.get("/banner", Authorization.Authenticated, BannerController.GetBanner);
