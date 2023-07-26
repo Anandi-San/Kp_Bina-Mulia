@@ -18,63 +18,63 @@ const router = express.Router();
 
 // Role
 router.get("/role", Authorization.Authenticated, RoleController.GetRole);
-router.get("/role/:id", RoleController.GetRoleById);
-router.patch("/role/:id", RoleController.UpdateRole);
-router.post("/role", RoleController.CreateRole);
-router.patch("/role/:id", RoleController.UpdateRole);
-router.delete("/role/:id", RoleController.DeleteRole);
+router.get("/role/:id", Authorization.Authenticated,Authorization.SuperUser ,RoleController.GetRoleById);
+router.patch("/role/:id", Authorization.Authenticated,Authorization.SuperUser ,RoleController.UpdateRole);
+router.post("/role",Authorization.Authenticated,Authorization.SuperUser , RoleController.CreateRole);
+router.patch("/role/:id",Authorization.Authenticated,Authorization.SuperUser , RoleController.UpdateRole);
+router.delete("/role/:id",Authorization.Authenticated,Authorization.SuperUser , RoleController.DeleteRole);
 
 
 // User
 // router.post("/user/signup",UserValidation.RegisterValidation, UserController.RegisterUser);
-router.post("/signup",UserValidation.RegisterValidation, UserController.SignUp);
+router.post("/signup",UserValidation.RegisterValidation, UserController.SignUp); //ini masih lokal tidak memakai email
 router.post("/user/login", UserController.UserLogin);
 router.get("/user/refresh-token", UserController.RefreshToken);
-router.get("/user/current-user", Authorization.Authenticated, UserController.UserDetail);
+router.get("/user/current-user", Authorization.Authenticated, Authorization.SuperUser, UserController.UserDetail);
 router.get("/user/logout", Authorization.Authenticated, UserController.UserLogout);
 router.post("/signin", UserController.SignInwithGoogle);
 router.get("/verify/:token", UserController.VerifyToken);
 router.post("/resetPassword", UserController.resetPassword)
 
 // features User
-router.get("/user", UserFeaturesController.GetAllUser);
-router.get("/user/:id",UserFeaturesController.GetUserById);
+router.get("/user",Authorization.Authenticated, Authorization.AdminRole, UserFeaturesController.GetAllUser);
+router.get("/user/:id",Authorization.Authenticated ,UserFeaturesController.GetUserById);
 router.patch("/user/:id",Authorization.Authenticated, Authorization.BasicUser, UserFeaturesController.UpdateUserByUser);
-router.patch("/user/admin/:id",Authorization.Authenticated, Authorization.SuperUser, UserFeaturesController.UpdateUserByAdmin);
-router.delete("/user/:id", Authorization.Authenticated, Authorization.SuperUser, UserFeaturesController.DeleteUser);
+router.patch("/user/admin/:id",Authorization.Authenticated, Authorization.AdminRole, UserFeaturesController.UpdateUserByAdmin);
+router.delete("/user/:id", Authorization.Authenticated, Authorization.AdminRole, UserFeaturesController.DeleteUser);
 
 // Banner
-router.get("/banner", Authorization.Authenticated, BannerController.GetBanner);
-router.post("/banner", BannerController.createBanner);
-router.get("/banner/:id", BannerController.GetBannerById);
-router.patch("/banner/:id",BannerController.updateBanner);
-router.delete("/banner/:id", BannerController.deleteBanner);
+router.get("/banner", BannerController.GetBanner);
+router.post("/banner", Authorization.Authenticated, Authorization.AdminRole ,BannerController.createBanner);
+router.get("/banner/:id", Authorization.Authenticated, BannerController.GetBannerById);
+router.patch("/banner/:id",Authorization.Authenticated, Authorization.AdminRole ,BannerController.updateBanner);
+router.delete("/banner/:id", Authorization.AdminRole, BannerController.deleteBanner);
 
 // Berita
 router.get("/berita&program", BeritaController.GetBerita);
 router.get("/berita&program/:id", BeritaController.GetBeritaById);
-router.post("/berita&program", BeritaController.createBerita);
-router.patch("/berita&program/:id", BeritaController.updateBerita);
-router.delete("/berita*program/:id", BeritaController.deleteBerita);
+router.post("/berita&program", Authorization.Authenticated, Authorization.AdminRole, BeritaController.createBerita);
+router.patch("/berita&program/:id",Authorization.Authenticated, Authorization.AdminRole, BeritaController.updateBerita);
+router.delete("/berita*program/:id",Authorization.Authenticated, Authorization.AdminRole, BeritaController.deleteBerita);
 
 //Career
 router.get("/career", CareerController.getCareer);
 router.get("/career/:id", CareerController.GetCareerById);
-router.post("/career", CareerController.CreateCareer);
-router.patch("/career/:id", CareerController.UpdateCareer);
-router.delete("/career/:id", CareerController.DeleteCareer);
+router.post("/career", Authorization.Authenticated, Authorization.AdminRole, CareerController.CreateCareer);
+router.patch("/career/:id",Authorization.Authenticated, Authorization.AdminRole, CareerController.UpdateCareer);
+router.delete("/career/:id",Authorization.Authenticated, Authorization.AdminRole, CareerController.DeleteCareer);
 
 // Galeri 
 router.get("/galeri", GaleriController.GetGaleri);
 router.get("/galeri/:id", GaleriController.GetGaleriById);
-router.post("/galeri", GaleriController.createGaleri);
-router.patch("/galeri/:id", GaleriController.updateGaleri);
-router.delete("/galeri/:id", GaleriController.deleteGaleri);
+router.post("/galeri",Authorization.Authenticated, Authorization.AdminRole, GaleriController.createGaleri);
+router.patch("/galeri/:id",Authorization.Authenticated, Authorization.AdminRole, GaleriController.updateGaleri);
+router.delete("/galeri/:id",Authorization.Authenticated, Authorization.AdminRole, GaleriController.deleteGaleri);
 
 // Forum
 router.get("/forum", MessageController.getMessage);
-router.post("/forum", MessageController.createMessage);
-router.delete("/forum/:id", MessageController.deleteMessage);
+router.post("/forum",Authorization.Authenticated, MessageController.createMessage);
+router.delete("/forum/:id",Authorization.Authenticated, MessageController.deleteMessage);
 
 
 export default router;

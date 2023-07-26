@@ -28,7 +28,8 @@ const GetAllUser = async (req: Request, res: Response): Promise<Response> => {
             include: {
 				model: Role,
 				attributes: ["roleName"]
-			}
+			},
+      order: [['createdAt', 'DESC']]
         });
         if (!users) {
 			return res.status(404).send(Helper.ResponseData(404, "Message not found", null, null));
@@ -193,4 +194,4 @@ const DeleteUser = async (req: Request, res: Response): Promise<Response> => {
 
   
 
-export default {GetAllUser, GetUserById, UpdateUserByUser, UpdateUserByAdmin, DeleteUser    }
+export default {GetAllUser, GetUserById, UpdateUserByUser, UpdateUserByAdmin, DeleteUser}

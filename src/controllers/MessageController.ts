@@ -11,7 +11,8 @@ const getMessage = async (req: Request, res: Response): Promise<Response> => {
 			include: {
 				model: User,
 				attributes: ["id", "name" , "photoUrl"]
-			}
+			},
+      order: [["createdAt", "DESC"]]
 		});
 
 		if (!message) {

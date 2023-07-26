@@ -5,6 +5,8 @@ import multer, { Multer} from 'multer';
 import path from "path"
 import moment from 'moment-timezone';
 import fs from "fs";
+import session from "express-session";
+
 
 
 const upload: Multer = multer({
@@ -23,7 +25,9 @@ const upload: Multer = multer({
 
 const GetBerita = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const berita = await Berita.findAll();
+      const berita = await Berita.findAll({
+        order: [['createdAt', 'DESC']]
+      });
       return res.status(200).send({
         data: berita
       });
@@ -83,6 +87,10 @@ const GetBerita = async (req: Request, res: Response): Promise<Response> => {
     }
   };
   
+  interface CustomSession extends session.Session {
+    userId?: number;
+    }
+
   const createBerita = async (req: Request, res: Response): Promise<any> => {
     try {
       upload.array('images', 3)(req, res, async (err) => {
@@ -103,9 +111,12 @@ const GetBerita = async (req: Request, res: Response): Promise<Response> => {
             images[i] = file.filename;
           }
         }
+
+        const customSession = req.session as CustomSession;
+        const userId = customSession.userId;
   
         const { title, deskripsi } = req.body;
-        const userId = res.locals.id; // belum tau ini belum coba
+        // const userId = res.locals.id; // belum tau ini belum coba
   
         const berita = await Berita.create({
           title,

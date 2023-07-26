@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import Helper from "../helpers/Helper";
-import User from "../db/models/User";
+// import User from "../db/models/User";
 
-interface CustomRequest extends Request {
-	userId: string;
-  }
+// interface CustomRequest extends Request {
+// 	userId: string;
+//   }
 
 const Authenticated = (req: Request, res: Response, next: NextFunction) => {
 	try {

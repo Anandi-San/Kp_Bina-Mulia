@@ -25,7 +25,8 @@ const upload: Multer = multer({
 const getCareer = async (req: Request, res: Response): Promise<Response> => {
   try {
     const careers = await Career.findAll({
-      attributes: ["title","photo", "posisi", "kualifikasi", "jobdesc", "penempatan", "deadline", "link"]
+      attributes: ["title","photo", "posisi", "kualifikasi", "jobdesc", "penempatan", "deadline", "link"],
+      order: [['createdAt', 'DESC']]
     });
 
     //dengan memakai koma

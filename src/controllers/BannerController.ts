@@ -21,7 +21,9 @@ const upload: Multer = multer({
 
 const GetBanner = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const banner = await Banner.findAll();
+    const banner = await Banner.findAll({
+      order: [['createdAt', 'DESC']] // Menyortir data berdasarkan kolom createdAt secara descending (terbaru ke terlama)
+    });
     return res.status(200).send({
       data: banner
     });

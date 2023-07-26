@@ -22,7 +22,9 @@ const upload: Multer = multer({
 
   const GetGaleri = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const galeri = await Galeri.findAll();
+      const galeri = await Galeri.findAll({
+      order: [['createdAt', 'DESC']]
+      });
       return res.status(200).send({
         status: 201,
         message: "show all Galeri",
