@@ -35,6 +35,8 @@ const upload: Multer = multer({
       const beritaWithImageUrls = berita.map((item) => ({
         ...item.toJSON(), // Convert the Sequelize model instance to a plain JavaScript object
         image1: `${baseUrl}/images/Berita/${item.image1}`,
+        image2: `${baseUrl}/images/Berita/${item.image2}`,
+        image3: `${baseUrl}/images/Berita/${item.image3}`,
       }));
   
       return res.status(200).send({

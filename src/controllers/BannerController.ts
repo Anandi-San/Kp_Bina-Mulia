@@ -24,8 +24,15 @@ const GetBanner = async (req: Request, res: Response): Promise<Response> => {
     const banner = await Banner.findAll({
       order: [['createdAt', 'DESC']] // Menyortir data berdasarkan kolom createdAt secara descending (terbaru ke terlama)
     });
+
+    const baseUrl = "http://localhost:7000"; // Your backend base URL here
+      const bannerwithurl = banner.map((item) => ({
+        ...item.toJSON(), // Convert the Sequelize model instance to a plain JavaScript object
+        banner: `${baseUrl}/images/banner/${item.banner}`,
+      }));
+
     return res.status(200).send({
-      data: banner
+      data: bannerwithurl
     });
   } catch (error: any) {
     if (error instanceof Error) {
