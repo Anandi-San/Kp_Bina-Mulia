@@ -6,6 +6,7 @@ import cors from "cors";
 import session from "express-session";
 import SequelizeStore from "connect-session-sequelize";
 import sequelizeConnection from "./config/dbConnect";
+import path from "path";
 
 dotenv.config();
 
@@ -37,6 +38,12 @@ app.get("/", (req: Request, res: Response) => {
 		response: "Express TypeScript"
 	});
 })
+
+app.get('/images/:folder/:url', function (req, res) {
+	// res.sendFile(filepath);
+	const appDir = path.resolve(__dirname);
+	return res.status(200).sendFile(`${appDir}/uploads/img/${req.params.folder}/${req.params.url}`);
+});
 
 app.use(
 	cors({

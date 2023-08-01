@@ -37,7 +37,7 @@ router.get("/verify/:token", UserController.VerifyToken);
 router.post("/resetPassword", UserController.resetPassword)
 
 // features User
-router.get("/user",Authorization.Authenticated, Authorization.AdminRole, UserFeaturesController.GetAllUser);
+router.get("/user", UserFeaturesController.GetAllUser); //masih belum ada login
 router.get("/user/:id",Authorization.Authenticated ,UserFeaturesController.GetUserById);
 router.patch("/user/:id",Authorization.Authenticated, Authorization.BasicUser, UserFeaturesController.UpdateUserByUser);
 router.patch("/user/admin/:id",Authorization.Authenticated, Authorization.AdminRole, UserFeaturesController.UpdateUserByAdmin);
@@ -45,7 +45,7 @@ router.delete("/user/:id", Authorization.Authenticated, Authorization.AdminRole,
 
 // Banner
 router.get("/banner", BannerController.GetBanner);
-router.post("/banner", Authorization.Authenticated, Authorization.AdminRole ,BannerController.createBanner);
+router.post("/banner" ,BannerController.createBanner); // belum ada login
 router.get("/banner/:id", Authorization.Authenticated, BannerController.GetBannerById);
 router.patch("/banner/:id",Authorization.Authenticated, Authorization.AdminRole ,BannerController.updateBanner);
 router.delete("/banner/:id", Authorization.AdminRole, BannerController.deleteBanner);
@@ -53,7 +53,7 @@ router.delete("/banner/:id", Authorization.AdminRole, BannerController.deleteBan
 // Berita
 router.get("/berita&program", BeritaController.GetBerita);
 router.get("/berita&program/:id", BeritaController.GetBeritaById);
-router.post("/berita&program", Authorization.Authenticated, Authorization.AdminRole, BeritaController.createBerita);
+router.post("/berita&program", BeritaController.createBerita);
 router.patch("/berita&program/:id",Authorization.Authenticated, Authorization.AdminRole, BeritaController.updateBerita);
 router.delete("/berita*program/:id",Authorization.Authenticated, Authorization.AdminRole, BeritaController.deleteBerita);
 

@@ -96,11 +96,11 @@ const createBanner = async (req: Request, res: Response): Promise<any> => {
       const bannerImage = req.file;
       const imageName = bannerImage.filename;
 
-      const { title, subtitle } = req.body;
+      // const { title, subtitle } = req.body;
 
       const banner = await Banner.create({
-        title,
-        subtitle,
+        // title,
+        // subtitle,
         banner: imageName
       });
 

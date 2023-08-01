@@ -23,13 +23,22 @@ const upload: Multer = multer({
     })
   });
 
-const GetBerita = async (req: Request, res: Response): Promise<Response> => {
+  const GetBerita = async (req: Request, res: Response): Promise<Response> => {
     try {
       const berita = await Berita.findAll({
         order: [['createdAt', 'DESC']]
       });
+  
+      // Assuming 'berita' contains image filenames (e.g., '20230726_babymetal.jpg')
+      // Update 'image1' property with the full image URLs
+      const baseUrl = "http://localhost:7000"; // Your backend base URL here
+      const beritaWithImageUrls = berita.map((item) => ({
+        ...item.toJSON(), // Convert the Sequelize model instance to a plain JavaScript object
+        image1: `${baseUrl}/images/Berita/${item.image1}`,
+      }));
+  
       return res.status(200).send({
-        data: berita
+        data: beritaWithImageUrls
       });
     } catch (error: any) {
       if (error instanceof Error) {
@@ -46,6 +55,8 @@ const GetBerita = async (req: Request, res: Response): Promise<Response> => {
       });
     }
   };
+  
+  
 
   const GetBeritaById = async (req: Request, res: Response): Promise<Response> => {
     try {
@@ -91,63 +102,73 @@ const GetBerita = async (req: Request, res: Response): Promise<Response> => {
     userId?: number;
     }
 
-  const createBerita = async (req: Request, res: Response): Promise<any> => {
-    try {
-      upload.array('images', 3)(req, res, async (err) => {
-        if (err) {
-          return res.status(400).send({
-            status: 400,
-            message: 'Failed to upload Berita',
-            errors: err
+    const createBerita = async (req: Request, res: Response): Promise<any> => {
+      try {
+        upload.array('images', 3)(req, res, async (err) => {
+          if (err) {
+            return res.status(400).send({
+              status: 400,
+              message: 'Failed to upload Berita',
+              errors: err
+            });
+          }
+    
+          const images: string[] = [];
+          if (req.files && Array.isArray(req.files)) {
+            const files = req.files as Express.Multer.File[];
+    
+            for (let i = 0; i < files.length; i++) {
+              const file = files[i];
+              images.push(file.filename);
+            }
+          }
+    
+          const customSession = req.session as CustomSession;
+          const userId = customSession.userId;
+    
+          const { title, deskripsi } = req.body;
+    
+          const berita = await Berita.create({
+            title,
+            userId,
+            deskripsi,
+            image1: images[0],
+            image2: images[1],
+            image3: images[2]
+          });
+    
+          // Assuming 'berita' contains image filenames (e.g., '20230726_babymetal.jpg')
+          // Update 'image1' property with the full image URL
+          const baseUrl = "http://localhost:7000"; // Your backend base URL here
+          const beritaWithImageUrls = {
+            ...berita.toJSON(), // Convert the Sequelize model instance to a plain JavaScript object
+            image1: `${baseUrl}/src/uploads/img/Berita/${berita.image1}`,
+            image2: `${baseUrl}/src/uploads/img/Berita/${berita.image2}`,
+            image3: `${baseUrl}/src/uploads/img/Berita/${berita.image3}`,
+          };
+    
+          return res.status(201).send({
+            status: 201,
+            message: 'Berita created successfully',
+            data: beritaWithImageUrls
+          });
+        });
+      } catch (error: any) {
+        if (error instanceof Error) {
+          return res.status(500).send({
+            status: 500,
+            message: error.message,
+            errors: error
           });
         }
-  
-        const images: (string | null)[] = [null, null, null];
-        if (req.files && Array.isArray(req.files)) {
-          const files = req.files as Express.Multer.File[];
-  
-          for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            images[i] = file.filename;
-          }
-        }
-
-        const customSession = req.session as CustomSession;
-        const userId = customSession.userId;
-  
-        const { title, deskripsi } = req.body;
-        // const userId = res.locals.id; // belum tau ini belum coba
-  
-        const berita = await Berita.create({
-          title,
-          userId,
-          deskripsi,
-          image1: images[0],
-          image2: images[1],
-          image3: images[2]
-        });
-  
-        return res.status(201).send({
-          status: 201,
-          message: 'Berita created successfully',
-          data: berita
-        });
-      });
-    } catch (error: any) {
-      if (error instanceof Error) {
         return res.status(500).send({
           status: 500,
-          message: error.message,
+          message: 'Internal server error',
           errors: error
         });
       }
-      return res.status(500).send({
-        status: 500,
-        message: 'Internal server error',
-        errors: error
-      });
-    }
-  };
+    };
+    
 
   const updateBerita = async (req: Request, res: Response): Promise<any> => {
     try {
