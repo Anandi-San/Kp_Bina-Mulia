@@ -29,8 +29,6 @@ const upload: Multer = multer({
         order: [['createdAt', 'DESC']]
       });
   
-      // Assuming 'berita' contains image filenames (e.g., '20230726_babymetal.jpg')
-      // Update 'image1' property with the full image URLs
       const baseUrl = "http://localhost:7000"; // Your backend base URL here
       const beritaWithImageUrls = berita.map((item) => ({
         ...item.toJSON(), // Convert the Sequelize model instance to a plain JavaScript object
@@ -65,11 +63,11 @@ const upload: Multer = multer({
       const beritaId: number = Number(req.params.id);
       const berita = await Berita.findOne({
         where: {
-            id: beritaId
+          id: beritaId
         },
-        include:{
-            model: User,
-            attributes: ["name"]
+        include: {
+          model: User,
+          attributes: ["name"]
         }
       });
   
@@ -81,17 +79,19 @@ const upload: Multer = multer({
         });
       }
   
+      const baseUrl = "http://localhost:7000"; // Your backend base URL here
+  
+      const beritaData = {
+        ...berita.toJSON(),
+        image1: `${baseUrl}/images/Berita/${berita.image1}`,
+        image2: `${baseUrl}/images/Berita/${berita.image2}`,
+        image3: `${baseUrl}/images/Berita/${berita.image3}`,
+      };
+  
       return res.status(200).send({
-        data: berita
+        data: beritaData
       });
-    } catch (error: any) {
-      if (error instanceof Error) {
-        return res.status(500).send({
-          status: 500,
-          message: error.message,
-          errors: error
-        });
-      }
+    } catch (error) {
       return res.status(500).send({
         status: 500,
         message: "Internal server error",

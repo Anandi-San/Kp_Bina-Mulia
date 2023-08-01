@@ -25,10 +25,25 @@ const upload: Multer = multer({
       const galeri = await Galeri.findAll({
       order: [['createdAt', 'DESC']]
       });
+
+      const baseUrl = "http://localhost:7000"; // Your backend base URL here
+      const GaleriWithImageUrls = galeri.map((item) => ({
+        ...item.toJSON(), // Convert the Sequelize model instance to a plain JavaScript object
+        gambar1: `${baseUrl}/images/Galeri/${item.gambar1}`,
+        gambar2: `${baseUrl}/images/Galeri/${item.gambar2}`,
+        gambar3: `${baseUrl}/images/Galeri/${item.gambar3}`,
+        gambar4: `${baseUrl}/images/Galeri/${item.gambar4}`,
+        gambar5: `${baseUrl}/images/Galeri/${item.gambar5}`,
+        gambar6: `${baseUrl}/images/Galeri/${item.gambar6}`,
+        gambar7: `${baseUrl}/images/Galeri/${item.gambar7}`,
+        gambar8: `${baseUrl}/images/Galeri/${item.gambar8}`,
+      }));
+
+
       return res.status(200).send({
         status: 201,
         message: "show all Galeri",
-        data: galeri
+        data: GaleriWithImageUrls
       });
     } catch (error: any) {
       if (error instanceof Error) {
@@ -51,7 +66,7 @@ const upload: Multer = multer({
       const galeriId: number = Number(req.params.id);
       const galeri = await Galeri.findOne({
         where: {
-            id: galeriId
+          id: galeriId
         },
       });
       if (!galeri) {
@@ -61,19 +76,26 @@ const upload: Multer = multer({
           errors: null
         });
       }
+  
+      const baseUrl = "http://localhost:7000"; // Your backend base URL here
+      const galeriWithImageUrls = {
+        ...galeri.toJSON(),
+        gambar1: `${baseUrl}/images/Galeri/${galeri.gambar1}`,
+        gambar2: `${baseUrl}/images/Galeri/${galeri.gambar2}`,
+        gambar3: `${baseUrl}/images/Galeri/${galeri.gambar3}`,
+        gambar4: `${baseUrl}/images/Galeri/${galeri.gambar4}`,
+        gambar5: `${baseUrl}/images/Galeri/${galeri.gambar5}`,
+        gambar6: `${baseUrl}/images/Galeri/${galeri.gambar6}`,
+        gambar7: `${baseUrl}/images/Galeri/${galeri.gambar7}`,
+        gambar8: `${baseUrl}/images/Galeri/${galeri.gambar8}`,
+      };
+  
       return res.status(200).send({
-        status: 201,
-        message: "Get Galleri by id",
-        data: galeri
+        status: 200,
+        message: "Get Galeri by id",
+        data: galeriWithImageUrls
       });
     } catch (error: any) {
-      if (error instanceof Error) {
-        return res.status(500).send({
-          status: 500,
-          message: error.message,
-          errors: error
-        });
-      }
       return res.status(500).send({
         status: 500,
         message: "Internal server error",
@@ -81,6 +103,7 @@ const upload: Multer = multer({
       });
     }
   };
+  
 
   const createGaleri = async (req: Request, res: Response): Promise<any> => {
     try {

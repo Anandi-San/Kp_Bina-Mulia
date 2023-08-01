@@ -29,17 +29,18 @@ const getCareer = async (req: Request, res: Response): Promise<Response> => {
       order: [['createdAt', 'DESC']]
     });
 
-    //dengan memakai koma
+    const baseUrl = "http://localhost:7000"; // Your backend base URL here
+
     const careerData = careers.map((career) => {
       const specializationKualifikasi = career.kualifikasi.trim().split(',');
 
       const specializationObjects = specializationKualifikasi.map((kualifikasi, index) => {
         return {
           id: index + 1,
-          listkualifikasi : "- " + kualifikasi.trim()
+          listkualifikasi: "- " + kualifikasi.trim()
         };
       });
-      //dengan memakai garis baru
+
       const jobdescArray = career.jobdesc.trim().split('\n');
 
       const jobdescObjects = jobdescArray.map((jobdesc, index) => {
@@ -51,7 +52,7 @@ const getCareer = async (req: Request, res: Response): Promise<Response> => {
 
       return {
         title: career.title,
-        photo: career.photo,
+        photo: `${baseUrl}/images/photoProgram&Berita/${career.photo}`, // Combine the base URL with the photo filename
         posisi: career.posisi,
         kualifikasi: specializationObjects,
         jobdesc: jobdescObjects,
@@ -82,7 +83,6 @@ const getCareer = async (req: Request, res: Response): Promise<Response> => {
   }
 };
 
-
 const GetCareerById = async (req: Request, res: Response): Promise<Response> => {
   try {
     const careerId: number = Number(req.params.id);
@@ -95,6 +95,8 @@ const GetCareerById = async (req: Request, res: Response): Promise<Response> => 
         errors: null
       });
     }
+
+    const baseUrl = "http://localhost:7000"; // Your backend base URL here
 
     const specializationArray = career.kualifikasi.trim().split(',');
 
@@ -116,7 +118,7 @@ const GetCareerById = async (req: Request, res: Response): Promise<Response> => 
 
     const careerData = {
       title: career.title,
-      photo: career.photo,
+      photo: `${baseUrl}/images/photoProgram&Berita/${career.photo}`, // Combine the base URL with the photo filename
       posisi: career.posisi,
       kualifikasi: specializationObjects,
       jobdesc: jobdescObjects,
@@ -128,14 +130,7 @@ const GetCareerById = async (req: Request, res: Response): Promise<Response> => 
     return res.status(200).send({
       data: careerData
     });
-  } catch (error: any) {
-    if (error instanceof Error) {
-      return res.status(500).send({
-        status: 500,
-        message: error.message,
-        errors: error
-      });
-    }
+  } catch (error) {
     return res.status(500).send({
       status: 500,
       message: "Internal server error",
@@ -144,7 +139,6 @@ const GetCareerById = async (req: Request, res: Response): Promise<Response> => 
   }
 };
 
-      
 
   const CreateCareer = async (req: Request, res: Response): Promise<any> => {
     try {

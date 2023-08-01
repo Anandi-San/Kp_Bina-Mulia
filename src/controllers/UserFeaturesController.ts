@@ -31,13 +31,20 @@ const GetAllUser = async (req: Request, res: Response): Promise<Response> => {
 			},
       order: [['createdAt', 'DESC']]
         });
+
+        const baseUrl = "http://localhost:7000"; // Your backend base URL here
+        const userWithImageUrls = users.map((item) => ({
+          ...item.toJSON(), // Convert the Sequelize model instance to a plain JavaScript object
+          photoUrl: `${baseUrl}/images/profile/${item.photoUrl}`,
+        }));
+
         if (!users) {
 			return res.status(404).send(Helper.ResponseData(404, "Message not found", null, null));
 		}
         return res.status(200).json({
             status: 201,
             message: "Get All User",
-            data: users
+            data: userWithImageUrls
         });
     } catch (error) {
         console.error("Error retrieving users:", error);
@@ -73,7 +80,7 @@ const GetUserById = async (req: Request, res: Response): Promise<Response> => {
   
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, path.join(__dirname, "../uploads/img/user"));
+      cb(null, path.join(__dirname, "../uploads/img/profile"));
     },
     filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);

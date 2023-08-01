@@ -30,7 +30,7 @@ router.delete("/role/:id",Authorization.Authenticated,Authorization.SuperUser , 
 router.post("/signup",UserValidation.RegisterValidation, UserController.SignUp); //ini masih lokal tidak memakai email
 router.post("/user/login", UserController.UserLogin);
 router.get("/user/refresh-token", UserController.RefreshToken);
-router.get("/user/current-user", Authorization.Authenticated, Authorization.SuperUser, UserController.UserDetail);
+router.get("/user/current-user", UserController.UserDetail);
 router.get("/user/logout", Authorization.Authenticated, UserController.UserLogout);
 router.post("/signin", UserController.SignInwithGoogle);
 router.get("/verify/:token", UserController.VerifyToken);

@@ -290,6 +290,11 @@ const UserDetail = async (req: Request, res: Response): Promise<Response> => {
 			return res.status(404).send(Helper.ResponseData(404, "User not found", null, null));
 		}
 
+		const baseUrl = "http://localhost:7000"; // Your backend base URL here
+
+    // Assuming 'user.photo' contains the photo filename (e.g., 'user123.jpg')
+    	user.photoUrl =`${baseUrl}/images/users/${user.photoUrl}`;
+
 		user.password = "";
 		user.accessToken = "";
 		return res.status(200).send(Helper.ResponseData(200, "OK", null, user));
